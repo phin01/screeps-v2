@@ -32,7 +32,7 @@ function buildRecommendation(SPAWN_NAME) {
         // first extension, build it around the spawn, ideally against a wall
         if(__f.filterByStructure(currentStructures, STRUCTURE_EXTENSION).length == 0){
             recommendedPosition = defineBuildPosition(spawnBase, 10, noAdjacent=false, nextToWall=true);
-            // console.log(`${recommendedPosition.x} ${recommendedPosition.y}`);
+            console.log(`${recommendedPosition.x} ${recommendedPosition.y}`);
         }
         
         // console.log('build ext');
@@ -67,7 +67,8 @@ function defineBuildPosition(referenceStructure, range, noOccupiedAdjacent=true,
         var currentDistance = getDistanceBetweenPoints(referenceStructure.pos.x, referenceStructure.pos.y, objects[i].x, objects[i].y);
         if(currentDistance > longestDistance && 
             checkSpotAvailable(referenceStructure, objects[i].x, objects[i].y) &&
-            checkIfNoAdjacentStructures(referenceStructure, objects[i].x, objects[i].y) == noOccupiedAdjacent
+            checkIfNoAdjacentStructures(referenceStructure, objects[i].x, objects[i].y) == noOccupiedAdjacent &&
+            checkIfNextToWall(referenceStructure, objects[i].x, objects[i].y) == nextToWall
         ) {
             longestDistance = currentDistance;
             mostDistant = i;
@@ -83,8 +84,8 @@ function getDistanceBetweenPoints(x1, y1, x2, y2){
 function checkIfNoAdjacentStructures(referenceStructure, x, y){
     const adjacentSquares = referenceStructure.room.lookAtArea(y-1, x-1, y+1, x+1, true);
     for (let i = 0; i < adjacentSquares.length; i++) {
-        if(['source', 'structure', 'creep'].includes(spotDetails[i].type)) return false;
-        if(['wall'].includes(spotDetails[i].terrain)) return false;
+        if(['source', 'structure', 'creep'].includes(adjacentSquares[i].type)) return false;
+        if(['wall'].includes(adjacentSquares[i].terrain)) return false;
     }
     return true;
 }
@@ -101,7 +102,7 @@ function checkSpotAvailable(referenceStructure, spotX, spotY) {
 function checkIfNextToWall(referenceStructure, x, y){
     const adjacentSquares = referenceStructure.room.lookAtArea(y-1, x-1, y+1, x+1, true);
     for (let i = 0; i < adjacentSquares.length; i++) {
-        if(['wall'].includes(spotDetails[i].terrain)) return true;
+        if(['wall'].includes(adjacentSquares[i].terrain)) return true;
     }
     return false;
 }
