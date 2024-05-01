@@ -30,7 +30,7 @@ module.exports.loop = function () {
     for (spawn in spawnList) {
 
         // CHECK IF SPAWN IS UNDER ATTACK, OTHERWISE PUT THE TOWERS TO WORK ON REPAIRS
-        // if(!__f.checkAttack(spawn)) { __f.towerRepair(spawn); }
+        if(!__f.checkAttack(spawn)) { __f.towerRepair(spawn); }
 
 		// CHECK BUILD RECOMMENDATIONS
 		__build.buildRecommendation(spawn);
