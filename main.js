@@ -8,6 +8,9 @@ var roleUpgrader = require('role.upgrader');
 // SPAWN ROUTINE
 var __spawn = require('spawn.recommendation');
 
+// BUILD ROUTINE
+var __build = require('build.recommendation');
+
 module.exports.loop = function () {
 
 	// CLEAR DEAD CREEPS FROM MEMORY
@@ -25,8 +28,11 @@ module.exports.loop = function () {
     var spawnList = Game.spawns;
     for (spawn in spawnList) {
 
-         // CHECK IF SPAWN IS UNDER ATTACK, OTHERWISE PUT THE TOWERS TO WORK ON REPAIRS
+        // CHECK IF SPAWN IS UNDER ATTACK, OTHERWISE PUT THE TOWERS TO WORK ON REPAIRS
         // if(!__f.checkAttack(spawn)) { __f.towerRepair(spawn); }
+
+		// CHECK BUILD RECOMMENDATIONS
+		__build.buildRecommendation(spawn);
 
         // REPURPOSE BUILDERS IN SPAWN'S ROOM
         // __f.repurposeBuilders(spawn);
