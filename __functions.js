@@ -294,6 +294,37 @@ function linkTransfer(currentSpawn) {
     
 }
 
+/* **************************************************************************** */
+/* 
+/* BUILDING FUNCTIONS
+/* 
+/* **************************************************************************** */
 
 
-module.exports = { gatherEnergySource, repurposeBuilders, linkTransfer, towerRepair, findClosestBrokenStructure, fixClosestStructure, brokenStructures, checkNearbyHostile, checkAttack, enoughEnergy, listOfCreeps, harvesterDying, spawnCreepOfType, roomEnergy, harvesterCost, findStructure, fixStructure, gatherEnergy };
+function filterByStructure(list, structureType){
+    return list.filter((structure) => structure.structureType == structureType);
+}
+
+
+
+module.exports = { 
+    gatherEnergySource, 
+    repurposeBuilders, 
+    linkTransfer, 
+    towerRepair, 
+    findClosestBrokenStructure, 
+    fixClosestStructure, 
+    brokenStructures, 
+    checkNearbyHostile,
+    checkAttack,
+    enoughEnergy,
+    listOfCreeps,
+    harvesterDying,
+    spawnCreepOfType,
+    roomEnergy,
+    harvesterCost,
+    findStructure, 
+    fixStructure,
+    gatherEnergy,
+    filterByStructure
+ };
