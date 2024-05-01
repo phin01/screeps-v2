@@ -32,6 +32,7 @@ function spawnRecommendation(SPAWN_NAME) {
     // CURRENT ENERGY LEVEL AVAILABLE FOR SPAWNING AND TOTAL ENERGY CAPACITY
     var actualEnergy = Game.spawns['' + SPAWN_NAME +''].room.energyAvailable;
     var possibleEnergy = Game.spawns['' + SPAWN_NAME +''].room.energyCapacityAvailable;
+    const currentConstructions = Game.spawns[SPAWN_NAME].room.find(FIND_CONSTRUCTION_SITES);
 
     // VARIABLES FOR NEXT CREEP TYPE
     var recommendedRole;
@@ -41,19 +42,23 @@ function spawnRecommendation(SPAWN_NAME) {
     var recommendedBody = baseBody;
 
     // IF ALL HELL HAS BROKEN LOOSE AND THE BASE IS EMPTY, START FRESH WITH A HUMBLE HARVESTER
-    if (totalCreeps == 0) {
+    if (totalCreeps == 0 || harvesterList.length == 0) {
         recommendedRole = __c.ROLE_HARVESTER;
         recommendedBody = baseBody;
     }
 
     // IF THINGS ARE GOING WELL, SPAWN THE BASIC, TOP PRIORITY CREEPS:
-    //    - 1 UPGRADER
-    //    - TBD
+    //    - 3 UPGRADER
+    //    - 1 BUILDER
     //    - TBD
 
     else {
-        if(upgraderList.length < 1){
+        if(upgraderList.length < 4){
             recommendedRole = __c.ROLE_UPGRADER;
+            recommendedBody = baseBody;
+        }
+        else if(builderList.length < 3 && currentConstructions.length > 0){
+            recommendedRole = __c.ROLE_BUILDER;
             recommendedBody = baseBody;
         }
     }
@@ -66,7 +71,7 @@ function spawnRecommendation(SPAWN_NAME) {
     }
 
     // console.log('[' + Game.spawns[SPAWN_NAME].room.name + '|' + SPAWN_NAME + ']' +': ' + (harvester1_List.length + harvester0_List.length) + ' harvesters | ' + builderList.length + ' builders | ' + upgraderList.length + ' upgraders | ' + wallRepairerList.length + ' repairers | ' + transporterList.length + ' transporters --- ' + Game.spawns['' + SPAWN_NAME +''].room.energyAvailable + ' room energy - Next spawn: ' + recommendedRole);
-    console.log('[' + Game.spawns[SPAWN_NAME].room.name + '|' + SPAWN_NAME + ']' +': ' + (harvesterList.length) + ' harvesters | ' + builderList.length + ' builders | ' + upgraderList.length + ' upgraders | ' + wallRepairerList.length + ' repairers | ' + transporterList.length + ' transporters --- ' + Game.spawns['' + SPAWN_NAME +''].room.energyAvailable + ' room energy - Next spawn: ' + recommendedRole);
+    // console.log('[' + Game.spawns[SPAWN_NAME].room.name + '|' + SPAWN_NAME + ']' +': ' + (harvesterList.length) + ' harvesters | ' + builderList.length + ' builders | ' + upgraderList.length + ' upgraders | ' + wallRepairerList.length + ' repairers | ' + transporterList.length + ' transporters --- ' + Game.spawns['' + SPAWN_NAME +''].room.energyAvailable + ' room energy - Next spawn: ' + recommendedRole);
 
 }
 
