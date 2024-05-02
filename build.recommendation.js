@@ -81,7 +81,18 @@ function buildRecommendation(SPAWN_NAME) {
         recommendedStructure = STRUCTURE_TOWER;
         recommendedPosition = defineBuildPosition(spawnBase, 5);
         console.log(`Building recommendation: TOWER at X:${recommendedPosition.x} Y:${recommendedPosition.y}`);
-        buildStructure(recommendedPosition.x, recommendedPosition.y, STRUCTURE_TOWER);
+        buildStructure(spawnBase, recommendedPosition.x, recommendedPosition.y, STRUCTURE_TOWER);
+    }
+
+    // create containers next to sources, so dedicated harvesters can work
+    const totalContainers = __f.filterByStructure(currentStructures, STRUCTURE_CONTAINER) + __f.filterByStructure(currentConstructions, STRUCTURE_CONTAINER);
+    const sources = spawnBase.room.find(FIND_SOURCES);
+    if(totalContainers.length < sources.length) {
+        for(let i=0; i < sources.length; i++){
+            recommendedPosition = getPositionAdjacentToSource(sources[i]);
+            if(recommendedPosition) 
+                buildStructure(spawnBase, recommendedPosition.x, recommendedPosition.y, STRUCTURE_CONTAINER);
+        }
     }
 
 
@@ -89,7 +100,7 @@ function buildRecommendation(SPAWN_NAME) {
 
 
 
-function defineBuildPosition(referenceStructure, range, noOccupiedAdjacent=true, nextToWall=false, minSurroundingWalls=0, flexSurroundingWalls=false){
+function defineBuildPosition(referenceStructure, range, noOccupiedAdjacent=true, nextToWall=false, minSurroundingWalls=0, flexSurroundingWalls=false, isAvailable=true){
     var longestDistance = 0;
     var mostDistant;
     // console.log(`${flexSurroundingWalls} ${minSurroundingWalls}`);
@@ -101,7 +112,7 @@ function defineBuildPosition(referenceStructure, range, noOccupiedAdjacent=true,
     for (let i = 0; i < objects.length; i++) {
         var currentDistance = getDistanceBetweenPoints(referenceStructure.pos.x, referenceStructure.pos.y, objects[i].x, objects[i].y);
         if(currentDistance >= longestDistance && 
-            checkSpotAvailable(referenceStructure, objects[i].x, objects[i].y) && 
+            checkSpotAvailable(referenceStructure, objects[i].x, objects[i].y) == isAvailable && 
             checkIfNoAdjacentStructures(referenceStructure, objects[i].x, objects[i].y) == noOccupiedAdjacent &&
             checkIfNextToWall(referenceStructure, objects[i].x, objects[i].y) == nextToWall &&
             checkNumberAdjacentWalls(referenceStructure, objects[i].x, objects[i].y) >= minSurroundingWalls
@@ -155,6 +166,16 @@ function checkNumberAdjacentWalls(referenceStructure, x, y){
             adjacentWalls++;
     }
     return adjacentWalls;
+}
+
+function getPositionAdjacentToSource(source){
+    const adjacentSquares = source.room.lookAtArea(source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true);
+    // console.log(adjacentSquares.length);
+    for (let i = 0; i < adjacentSquares.length; i++){
+        if(['source', 'structure', 'creep', 'constructionSite'].includes(adjacentSquares[i].type)) continue;
+        if(['wall'].includes(adjacentSquares[i].terrain)) continue;
+        return adjacentSquares[i];
+    }
 }
 
 function buildStructure(referenceStructure, x, y, structureType){
